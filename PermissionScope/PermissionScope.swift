@@ -23,7 +23,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
 
     // MARK: UI Parameters
-    
+    public var languageCode: String?
     /// Header UILabel with the message "Hey, listen!" by default.
     public let headerLabel                 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
     /// Header UILabel with the message "We need a couple things\r\nbefore you get started." by default.
@@ -177,7 +177,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         headerLabel.font = UIFont.systemFontOfSize(22)
         headerLabel.textColor = UIColor.blackColor()
         headerLabel.textAlignment = NSTextAlignment.Center
-        headerLabel.text = "Hey, listen!".localized
+        headerLabel.text = "Hey, listen!".localized(languageCode)
 
         contentView.addSubview(headerLabel)
 
@@ -185,13 +185,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         bodyLabel.font = UIFont.boldSystemFontOfSize(16)
         bodyLabel.textColor = UIColor.blackColor()
         bodyLabel.textAlignment = NSTextAlignment.Center
-        bodyLabel.text = "We need a couple things\r\nbefore you get started.".localized
+        bodyLabel.text = "We need a couple things\r\nbefore you get started.".localized(languageCode)
         bodyLabel.numberOfLines = 2
 
         contentView.addSubview(bodyLabel)
         
         // close button
-        closeButton.setTitle("Close".localized, forState: .Normal)
+        closeButton.setTitle("Close".localized(languageCode), forState: .Normal)
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
         
         contentView.addSubview(closeButton)
@@ -268,13 +268,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                     let prettyDescription = type.prettyDescription
                     if currentStatus == .Authorized {
                         self.setButtonAuthorizedStyle(button)
-                        button.setTitle("Allowed \(prettyDescription)".localized.uppercaseString, forState: .Normal)
+                        button.setTitle("Allowed \(prettyDescription)".localized(self.languageCode).uppercaseString, forState: .Normal)
                     } else if currentStatus == .Unauthorized {
                         self.setButtonUnauthorizedStyle(button)
-                        button.setTitle("Denied \(prettyDescription)".localized.uppercaseString, forState: .Normal)
+                        button.setTitle("Denied \(prettyDescription)".localized(self.languageCode).uppercaseString, forState: .Normal)
                     } else if currentStatus == .Disabled {
                         //                setButtonDisabledStyle(button)
-                        button.setTitle("\(prettyDescription) Disabled".localized.uppercaseString, forState: .Normal)
+                        button.setTitle("\(prettyDescription) Disabled".localized(self.languageCode).uppercaseString, forState: .Normal)
                     }
                     
                     let label = self.permissionLabels[index]
@@ -329,9 +329,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         // this is a bit of a mess, eh?
         switch type {
         case .LocationAlways, .LocationInUse:
-            button.setTitle("Enable \(type.prettyDescription)".localized.uppercaseString, forState: .Normal)
+            button.setTitle("Enable \(type.prettyDescription)".localized(languageCode).uppercaseString, forState: .Normal)
         default:
-            button.setTitle("Allow \(type)".localized.uppercaseString, forState: .Normal)
+            button.setTitle("Allow \(type)".localized(languageCode).uppercaseString, forState: .Normal)
         }
         
         button.addTarget(self, action: Selector("request\(type)"), forControlEvents: .TouchUpInside)
@@ -373,7 +373,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         label.font = labelFont
         label.numberOfLines = 2
         label.textAlignment = .Center
-        label.text = permissionMessages[type]
+        label.text = permissionMessages[type]?.localized(languageCode)
         label.textColor = permissionLabelColor
         
         return label
@@ -1093,13 +1093,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        let alert = UIAlertController(title: "Permission for \(permission) was denied.".localized,
-            message: "Please enable access to \(permission) in the Settings app".localized,
+        let alert = UIAlertController(title: "Permission for \(permission) was denied.".localized(languageCode),
+            message: "Please enable access to \(permission) in the Settings app".localized(languageCode),
             preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK".localized,
+        alert.addAction(UIAlertAction(title: "OK".localized(languageCode),
             style: .Cancel,
             handler: nil))
-        alert.addAction(UIAlertAction(title: "Show me".localized,
+        alert.addAction(UIAlertAction(title: "Show me".localized(languageCode),
             style: .Default,
             handler: { action in
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
@@ -1127,10 +1127,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        let alert = UIAlertController(title: "\(permission) is currently disabled.".localized,
-            message: "Please enable access to \(permission) in Settings".localized,
+        let alert = UIAlertController(title: "\(permission) is currently disabled.".localized(languageCode),
+            message: "Please enable access to \(permission) in Settings".localized(languageCode),
             preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK".localized,
+        alert.addAction(UIAlertAction(title: "OK".localized(languageCode),
             style: .Cancel,
             handler: nil))
         

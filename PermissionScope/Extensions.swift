@@ -21,7 +21,12 @@ extension UIColor {
 
 extension String {
     /// NSLocalizedString shorthand
-    var localized: String {
+    func localized(languageCode: String?) -> String {
+        if let languageCode = languageCode {
+            if let path = NSBundle.mainBundle().pathForResource(languageCode.lowercaseString, ofType: "lproj"), bundle = NSBundle(path: path) {
+                return bundle.localizedStringForKey(self, value: nil, table: nil)
+            }
+        }
         return NSLocalizedString(self, comment: "")
     }
 }
